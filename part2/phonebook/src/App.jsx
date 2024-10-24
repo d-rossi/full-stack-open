@@ -1,12 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Search from './components/Search'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import axios from "axios"
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { id: 1, name: 'Arto Hellas' }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchText, setSearchText] = useState('')
@@ -31,6 +30,10 @@ const App = () => {
     setNewName('')
     setNewNumber('')
   }
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then(response => setPersons(response.data))
+  }, [])
 
   const filterPersons = searchText === '' ? persons : persons.filter(person => person.name.toLowerCase().includes(searchText))
 
