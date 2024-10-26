@@ -3,6 +3,7 @@ import Search from './components/Search'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import axios from "axios"
+import personsService from "./services/persons"
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -17,22 +18,31 @@ const App = () => {
   const handleFormSubmit = (event) => {
     event.preventDefault()
     const personExists = persons.find(person => person.name === newName)
-    if (personExists) {
-      alert(`${newName} is already added to phonebook`)
-      return
-    }
+
     const newPerson = {
-      id: persons.length + 1,
+      id: `${persons.length + 1}`,
       name: newName,
       number: newNumber
     }
-    setPersons(persons.concat(newPerson))
+
+    if (personExists) {
+      if (!window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) return
+      else personsService.updatePerson(personExists.id, {...newPerson, id: personExists.id}).then(updatedPerson => setPersons(persons.map(person => person.id === personExists.id ? updatedPerson : person)))
+    } else {
+      personsService.createPerson(newPerson).then(person => setPersons(persons.concat(person)))
+    }
     setNewName('')
     setNewNumber('')
   }
 
+  const handlePersonDeletion = (id) => {
+    if (window.confirm("Are you sure you want to delete?")) {
+      personsService.deletePerson(id).then(deletedPerson => setPersons(persons.filter(person => person.id !== id)))
+    }
+  }
+
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then(response => setPersons(response.data))
+    personsService.getAllPersons().then(persons => setPersons(persons))
   }, [])
 
   const filterPersons = searchText === '' ? persons : persons.filter(person => person.name.toLowerCase().includes(searchText))
@@ -44,7 +54,7 @@ const App = () => {
       <h2>add a new</h2>
       <PersonForm onSubmit={handleFormSubmit} name={newName} onChangeName={updateName} number={newNumber} onChangeNumber={updateNumber} />
       <h2>Numbers</h2>
-      <Persons filteredPersons={filterPersons} />
+      <Persons filteredPersons={filterPersons} onDelete={handlePersonDeletion} />
     </div>
   )
 }
