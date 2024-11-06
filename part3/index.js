@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require("./models/person")
 const app = express()
 app.use(express.json())
 app.use(cors())
@@ -11,41 +12,12 @@ morgan.token('body', req => {
   })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
-
-app.get("/api/persons", (request, response) => {      
-    response.json(persons)
+app.get("/api/persons", (request, response) => {
+    Person.find({}).then(persons => response.json(persons))
 })
 
 app.get("/api/persons/:id", (request, response) => {
-    const person = persons.find(person => person.id === request.params.id)
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    Person.findById(request.params.id).then(person => person ? response.json(person) : response.status(404).end())
 })
 
 app.post("/api/persons", (request, response) => {
@@ -61,24 +33,25 @@ app.post("/api/persons", (request, response) => {
         return response.status(400).json({error: 'name must be unique'})
     }
 
-    const person = {
-        id: `${Math.max(...persons.map(person => person.id)) + 1}`,
+    const person = new Person({
         name: request.body.name,
         number: request.body.number,
-    }
-    persons = persons.concat(person)
-    response.json(person)
+    })
+
+    person.save().then(savedPerson => response.json(person))
 })
 
 app.delete("/api/persons/:id", (request, response) => {
-    persons = persons.filter(person => person.id !== request.params.id)
+    Person.findByIdAndDelete(request.params.id)
     response.sendStatus(204).end()
 })
 
 app.get("/info", (request, response) => {
+    let personCount = 0;
+    Person.countDocuments({}).then(count => personcCunt = count)
     const html = `
     <div>
-        <p>Phonebook has info for ${persons.length} people</p>
+        <p>Phonebook has info for ${personCount} people</p>
         <p>${new Date()}</p>
     </div>`
     response.send(html)
