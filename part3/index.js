@@ -29,32 +29,33 @@ app.post("/api/persons", (request, response) => {
     if (!number) {
         return response.status(400).json({error: 'number is missing'})
     }
-    if (persons.find(person => person.name === name)) {
-        return response.status(400).json({error: 'name must be unique'})
-    }
 
-    const person = new Person({
-        name: request.body.name,
-        number: request.body.number,
+    Person.find({name: name}).then(person => {
+        if (person) {return response.status(400).json({error: 'name must be unique'})}
+        else {
+            const person = new Person({
+                name: request.body.name,
+                number: request.body.number,
+            })
+        
+            person.save().then(savedPerson => response.json(person))
+        }
     })
-
-    person.save().then(savedPerson => response.json(person))
 })
 
 app.delete("/api/persons/:id", (request, response) => {
-    Person.findByIdAndDelete(request.params.id)
-    response.sendStatus(204).end()
+    Person.findByIdAndDelete(request.params.id).then(person =>  response.sendStatus(204).end())
 })
 
 app.get("/info", (request, response) => {
-    let personCount = 0;
-    Person.countDocuments({}).then(count => personcCunt = count)
-    const html = `
-    <div>
-        <p>Phonebook has info for ${personCount} people</p>
-        <p>${new Date()}</p>
-    </div>`
-    response.send(html)
+    Person.countDocuments({}).then(count => {
+        const html = `
+        <div>
+            <p>Phonebook has info for ${count} people</p>
+            <p>${new Date()}</p>
+        </div>`
+        response.send(html)
+    })
 })
 
 
