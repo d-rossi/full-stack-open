@@ -35,15 +35,22 @@ const App = () => {
           setPersons(persons.map(person => person.id === personExists.id ? updatedPerson : person))
           setSuccessMessage(`Updated ${newPerson.name} phone number`)
         })
-        .catch(() => setErrorMessage(`Information of ${newPerson.name} has already been removed from server`))
+        .catch(error => setErrorMessage(error.response.data.error))
       }
     } else {
-      personsService.createPerson(newPerson).then(person => setPersons(persons.concat(person)))
-      setSuccessMessage(`Added ${newPerson.name}`)
+      personsService.createPerson(newPerson)
+                    .then(person => {
+                      setPersons(persons.concat(person))
+                      setSuccessMessage(`Added ${newPerson.name}`)
+                    })
+                    .catch(error => setErrorMessage(error.response.data.error))
     }
     setNewName('')
     setNewNumber('')
-    setTimeout(() => setSuccessMessage(null), 5000)
+    setTimeout(() => {
+      setSuccessMessage(null)
+      setErrorMessage(null)
+    }, 5000)
   }
 
   const handlePersonDeletion = (id) => {
