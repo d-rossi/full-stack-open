@@ -12,7 +12,6 @@ const dummy = (blogs) => {
 
   const mostBlogs = (blogs) => {
     const authorToBlogCount = blogs.reduce((artistToBlogsCount, blog) => {
-        console.log(artistToBlogsCount)
         const author = blog.author
         if (artistToBlogsCount[`${author}`] == null) artistToBlogsCount[`${author}`] = 0
         artistToBlogsCount[`${author}`]++

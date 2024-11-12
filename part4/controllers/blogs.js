@@ -9,14 +9,15 @@ routeHandler.get('/', (request, response) => {
       })
   })
   
-  routeHandler.post('/', (request, response) => {
-    const blog = new Blog(request.body)
+  routeHandler.post('/', (request, response, next) => {
+    const blog = {...request.body, likes: !request.body.likes ? 0 : request.body.likes}
   
-    blog
+    new Blog(blog)
       .save()
       .then(result => {
         response.status(201).json(result)
       })
+      .catch(err => next(err))
   })
 
   module.exports = routeHandler
