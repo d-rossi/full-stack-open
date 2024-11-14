@@ -63,6 +63,31 @@ describe('blogs api', () => {
 
         assert.strictEqual(response.status, 400)
     })
+
+    test('delete a blog', async () => {
+        const blogsBeforeDeletion = (await api.get('/api/blogs')).body
+        const blogIdToDelete = blogsBeforeDeletion[0].id
+        await api.delete(`/api/blogs/${blogIdToDelete}`)
+        const blogsAfterDeletion = (await api.get('/api/blogs')).body
+        assert.strictEqual(blogsAfterDeletion.length, blogsBeforeDeletion.length - 1)
+    })
+
+    test('delete a blog invalid id', async () => {
+        const response = await api.delete(`/api/blogs/randomId`)
+        assert.strictEqual(response.status, 404)
+    })
+
+    test('update a blog', async () => {
+        const blogsBeforeUpdate = (await api.get('/api/blogs')).body
+        const updatedBlog = {...blogsBeforeUpdate[0], title: 'UPDATED TITLE'}
+        const updatedBlogResponse = await api.put(`/api/blogs/${blogsBeforeUpdate[0].id}`).send(updatedBlog)
+        assert.strictEqual(updatedBlogResponse.body.title, updatedBlog.title)
+    })
+
+    test('update a blog invalid id', async () => {
+        const updatedBlogResponse = await api.put(`/api/blogs/randomId`).send({})
+        assert.strictEqual(updatedBlogResponse.status, 404)
+    })
 })
 
 after(() => {closeDBConnection()})
