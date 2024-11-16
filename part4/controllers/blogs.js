@@ -1,5 +1,4 @@
 const routeHandler = require('express').Router()
-const { response } = require('../app')
 const Blog = require('../models/blog')
 
 routeHandler.get('/', (request, response) => {
