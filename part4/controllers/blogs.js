@@ -1,29 +1,37 @@
 const routeHandler = require('express').Router()
-const { response } = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 routeHandler.get('/', (request, response) => {
     Blog
-      .find({})
+      .find({}).populate('user')
       .then(blogs => {
         response.json(blogs)
       })
   })
   
   routeHandler.post('/', (request, response, next) => {
-    const blog = {...request.body, likes: !request.body.likes ? 0 : request.body.likes}
-  
-    new Blog(blog)
+    User.findById(request.user.id)
+    .then(user => {
+      const blog = {...request.body, likes: !request.body.likes ? 0 : request.body.likes, user: user._id}
+      new Blog(blog)
       .save()
       .then(result => {
         response.status(201).json(result)
       })
       .catch(err => next(err))
+    })
+    .catch(err => next(err))
   })
 
   routeHandler.delete('/:id', (request, response, next) => {
-    Blog.findByIdAndDelete(request.params.id)
-    .then(result => response.status(204).end())
+    Blog.findById(request.params.id)
+    .then(blog => {
+      if (!blog) return response.status(404).end()
+      if (blog.user.toString() === request.user.id.toString()) {
+        Blog.findByIdAndDelete(request.params.id).then(() =>  response.status(204).end()).catch(err => next(err))
+      } else response.status(401).json({error: 'You are not authorized to delete a blog you have not created!'})
+    })
     .catch(err => next(err))
   })
 
