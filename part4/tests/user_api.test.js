@@ -9,10 +9,6 @@ const api = supertest(app)
 
 const USER_API = '/api/users'
 
-const getExistingUsers = async () => {
-    return await api.get(USER_API)
-}
-
 beforeEach(async () => {
     await User.deleteMany({})
 })
