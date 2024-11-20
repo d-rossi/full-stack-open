@@ -14,4 +14,12 @@ const create = (blog) => {
     return axios.post(BLOGS_URL, blog, {headers: { Authorization: token }}).then(response => response.data)
 }
 
-export default {get, create, setToken}
+const update = (blog) => {
+    return axios.put(`${BLOGS_URL}/${blog.id}`, blog, {headers: { Authorization: token }}).then(response => response.data)
+}
+
+const deleteBlog = (blogId) => {
+    return axios.delete(`${BLOGS_URL}/${blogId}`, {headers: { Authorization: token }}).then(response => response.data)
+}
+
+export default {get, create, update, deleteBlog, setToken}

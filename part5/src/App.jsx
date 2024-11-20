@@ -3,6 +3,8 @@ import blogService from './services/blog'
 import LoginForm from './components/loginForm'
 import BlogsForm from './components/BlogsForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import Blog from './components/Blog'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -51,12 +53,12 @@ function App() {
           {user.username} logged in
           <button onClick={() => handleLogout()}>Logout</button>
           </div>
-          <BlogsForm updateBlogs={updateBlogs}/>
-          <ul>
+          <Togglable buttonLabelForShow="New Blog" buttonLabelForHide="Cancel">
+            <BlogsForm updateBlogs={updateBlogs}/>
+          </Togglable>
             {
-              blogs.map(blog => <li key={blog.id}>{blog.title} by {blog.author}</li>)
+              blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog => <Blog key={blog.id} blogToDisplay={blog} loggedInUsername={user.username} />)
             }
-          </ul>
         </div>
       }
     </div>
