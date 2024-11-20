@@ -23,7 +23,7 @@ function App() {
 
   const updateBlogs = (newBlog) => {
     setBlogs(blogs.concat(newBlog))
-    setSuccessMessage("New blog successfully created!")
+    setSuccessMessage('New blog successfully created!')
     setTimeout(() => setSuccessMessage(''), 5000)
   }
 
@@ -37,10 +37,10 @@ function App() {
 
   useEffect(() => {
     blogService.get()
-    .then(blogs => setBlogs(blogs))
-    .catch(err => err)
+      .then(blogs => setBlogs(blogs))
+      .catch(err => err)
   }, [user])
-  
+
   return (
     <div>
       {user === null ?
@@ -50,15 +50,15 @@ function App() {
           {successMessage && <Notification type={'success'} message={successMessage} />}
           <h2>Blogs</h2>
           <div>
-          {user.username} logged in
-          <button onClick={() => handleLogout()}>Logout</button>
+            {user.username} logged in
+            <button onClick={() => handleLogout()}>Logout</button>
           </div>
           <Togglable buttonLabelForShow="New Blog" buttonLabelForHide="Cancel">
             <BlogsForm updateBlogs={updateBlogs}/>
           </Togglable>
-            {
-              blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog => <Blog key={blog.id} blogToDisplay={blog} loggedInUsername={user.username} />)
-            }
+          {
+            blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog => <Blog key={blog.id} blogToDisplay={blog} loggedInUsername={user.username} />)
+          }
         </div>
       }
     </div>
