@@ -27,12 +27,12 @@ const Blog = ({ blogToDisplay, loggedInUsername }) => {
     blog === null ?
       null :
       <div style={blogStyle}>
-        {blog.title} by {blog.author} <button onClick={() => setShowDetails(!showDetails)}>{showDetails ? 'Hide' : 'View'}</button>
+        {blog.title} by {blog.author} <button data-testid='detailsBtn' onClick={() => setShowDetails(!showDetails)}>{showDetails ? 'Hide' : 'View'}</button>
         {showDetails &&
-                <div>
+                <div data-testid='details'>
                   {blog.url}
                   <br/>
-                    Likes {blog.likes} <button onClick={() => updatedBlog(blog)}>Like</button>
+                    Likes {blog.likes} <button data-testid='likesBtn' onClick={() => updatedBlog(blog)}>Like</button>
                   <br/>
                   {blog.user.name}
                   <br/>
