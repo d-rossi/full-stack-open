@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon --env-file=.env index.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon --env-file=.env index.js",
+    "start:test": "ross-env NODE_ENV=test nodemon --env-file=.env index.js",
     "test": "cross-env NODE_ENV=test node --env-file=.env --test"
   },
   "author": "",
