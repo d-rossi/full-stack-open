@@ -8,7 +8,7 @@ loginRouter.post('/', async (request, response, next) => {
     const existingUser = await User.findOne({username: username})
     const isPasswordCorrect = existingUser === null ? false : await bcrypt.compare(password, existingUser.passwordHash)
     if (!(existingUser && isPasswordCorrect)) {
-        response.status(404).json({error: 'Username or password is invalid!'})
+       return response.status(404).json({error: 'Username or password is invalid!'})
     }
 
     const token = jwt.sign({username: username, id: existingUser._id}, process.env.SECRET)

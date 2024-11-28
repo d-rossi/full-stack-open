@@ -38,6 +38,7 @@ routeHandler.get('/', (request, response) => {
   routeHandler.put('/:id', (request, response, next) => {
     updatedBlog = {...request.body}
     Blog.findByIdAndUpdate(request.params.id, updatedBlog, { runValidators: true, new: true })
+    .populate('user')
     .then(blog => response.status(200).json(blog))
     .catch(err => next(err))
   })
