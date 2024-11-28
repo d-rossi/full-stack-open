@@ -32,11 +32,11 @@ const Blog = ({ blogToDisplay, loggedInUsername }) => {
                 <div data-testid='details'>
                   {blog.url}
                   <br/>
-                    Likes {blog.likes} <button data-testid='likesBtn' onClick={() => updatedBlog(blog)}>Like</button>
+                  <span data-testid='likesSpan'>Likes {blog.likes}</span> <button data-testid='likesBtn' onClick={() => updatedBlog(blog)}>Like</button>
                   <br/>
                   {blog.user.name}
                   <br/>
-                  {loggedInUsername === blog.user.username && <button onClick={() => deleteBlog(blog.id)}>Remove</button>}
+                  {loggedInUsername === blog.user.username && <button data-testid='deleteBtn' onClick={() => deleteBlog(blog.id)}>Remove</button>}
                 </div>
         }
       </div>

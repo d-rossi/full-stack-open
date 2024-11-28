@@ -25,9 +25,9 @@ const LoginForm = ({ handleUser }) => {
       {errorMessage && <Notification type={'error'} message={errorMessage}/>}
       <form data-testid='loginForm' onSubmit={(event) => handleLogin(event)}>
         <h2>Login to the Application</h2>
-                username: <input value={username} onChange={(event) => setUsername(event.target.value)}/>
+                username: <input data-testid='username' value={username} onChange={(event) => setUsername(event.target.value)}/>
         <br/>
-                password: <input value={password} onChange={(event) => setPassword(event.target.value)}/>
+                password: <input data-testid='password' value={password} onChange={(event) => setPassword(event.target.value)}/>
         <br/>
         <button type='submit'>Login</button>
       </form>
