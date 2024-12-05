@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
-import { incrementVote, setAnecdotes } from "../reducers/anecdoteReducer"
-import { setMessage } from "../reducers/notificationReducer"
+import { initializeAnecdotes, updateAnecdote } from "../reducers/anecdoteReducer"
+import { showNotification } from "../reducers/notificationReducer"
 import { useEffect } from "react"
-import anecdoteService from '../services/anecdotes'
 
 const Anecdotes = () => {
     const anecdotes = useSelector(({anecdotes, filter}) => {
@@ -11,15 +10,12 @@ const Anecdotes = () => {
     const dispatcher = useDispatch()
 
     const handleVote = (anecdote) => {
-        anecdoteService.update({...anecdote, votes: anecdote.votes+1}).then(anecdote => dispatcher(incrementVote(anecdote.id)))
-        dispatcher(setMessage(`YOU voted '${anecdote.content}'`))
-        setTimeout(() => {
-            dispatcher(setMessage(''))
-        }, 5000)
+        dispatcher(updateAnecdote(anecdote))
+        dispatcher(showNotification(`YOU voted '${anecdote.content}'`, 5))
     }
 
     useEffect(() => {
-        anecdoteService.getAll().then(anecdotes => dispatcher(setAnecdotes(anecdotes)))
+        dispatcher(initializeAnecdotes())
     }, [])
     
     return (
