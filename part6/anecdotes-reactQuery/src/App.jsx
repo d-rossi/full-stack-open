@@ -4,10 +4,6 @@ import Anecdotes from "./components/Anecdotes"
 import Filter from "./components/Filter"
 import Notification from "./components/Notification"
 
-const initialState = {
-  message: ''
-}
-
 const notificationReducer = (state, action) => {
   return action.payload.message
 }
